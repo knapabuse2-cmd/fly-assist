@@ -1,0 +1,2 @@
+import {defineConfig} from 'vite';
+export default defineConfig({base:process.env.GITHUB_ACTIONS?'/fly-assist/':'/',plugins:[{name:'public-security-policy',apply:'build',transformIndexHtml(html){return html.replace('<meta charset="UTF-8">',`<meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://api.x.ai; worker-src 'self' blob:; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'">`);}}]});

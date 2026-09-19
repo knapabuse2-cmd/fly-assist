@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+*.log
+upstream/
+design/
+.env.*
+*.webm
+*.mp4
+reports/grok-ledger.json

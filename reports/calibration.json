@@ -1,0 +1,8 @@
+{
+  "neurons": 138639,
+  "edges": 2700513,
+  "featureCount": 58,
+  "train": 36,
+  "test": 24,
+  "elapsedSeconds": 24.7946748
+}
