@@ -7,9 +7,13 @@ export async function recordDemo(engine,result,onProgress){
   if(!mime)throw Error('This browser cannot record WebM video.');
   const stream=canvas.captureStream(30),recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:6500000}),chunks=[];
   recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
-  const done=new Promise(resolve=>recorder.onstop=()=>{
+  const done=new Promise((resolve,reject)=>recorder.onstop=async()=>{
     engine.onRender=null;stream.getTracks().forEach(t=>t.stop());
-    const url=URL.createObjectURL(new Blob(chunks,{type:mime})),a=document.createElement('a');a.href=url;a.download='fly-assist-demo.webm';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);onProgress('Demo saved');resolve();
+    const blob=new Blob(chunks,{type:mime});
+    if(import.meta.env.DEV){
+      try{const r=await fetch('/__save-demo',{method:'POST',headers:{'Content-Type':'video/webm'},body:blob});if(!r.ok)throw Error('Could not save the demo');onProgress('Demo saved to reports/demo.webm');resolve();}catch(e){reject(e);}return;
+    }
+    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='fly-assist-demo.webm';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);onProgress('Demo saved');resolve();
   });
   let start=performance.now(),phase=0,finishedAt=null;
   engine.stimulate('sugar');
